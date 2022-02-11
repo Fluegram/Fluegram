@@ -74,6 +74,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluegram.Menus", "src\Menus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluegram.Menus.Abstractions", "src\Menus\Fluegram.Menus.Abstractions\Fluegram.Menus.Abstractions.csproj", "{AD428655-DE80-42F1-ADCB-1DC260D65FD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluegram.Example.Console", "examples\Fluegram.Example.Console\Fluegram.Example.Console.csproj", "{18E217C8-05EB-48FA-896A-D0D5FC4B349E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -210,5 +212,9 @@ Global
 		{AD428655-DE80-42F1-ADCB-1DC260D65FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD428655-DE80-42F1-ADCB-1DC260D65FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD428655-DE80-42F1-ADCB-1DC260D65FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E217C8-05EB-48FA-896A-D0D5FC4B349E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E217C8-05EB-48FA-896A-D0D5FC4B349E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E217C8-05EB-48FA-896A-D0D5FC4B349E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E217C8-05EB-48FA-896A-D0D5FC4B349E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
