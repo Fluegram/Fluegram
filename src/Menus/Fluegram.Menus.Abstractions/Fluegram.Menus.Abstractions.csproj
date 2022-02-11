@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Keyboards\Fluegram.Keyboards.Abstractions\Fluegram.Keyboards.Abstractions.csproj" />
+      <ProjectReference Include="..\..\Widgets\Fluegram.Widgets.Abstractions\Fluegram.Widgets.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

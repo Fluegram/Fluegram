@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Actions\Fluegram.Actions\Fluegram.Actions.csproj" />
+      <ProjectReference Include="..\..\..\Filters\Fluegram.Filters\Fluegram.Filters.csproj" />
+      <ProjectReference Include="..\..\..\Fluegram\Fluegram.csproj" />
+      <ProjectReference Include="..\Fluegram.Handlers.Reflection.Abstractions\Fluegram.Handlers.Reflection.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>
