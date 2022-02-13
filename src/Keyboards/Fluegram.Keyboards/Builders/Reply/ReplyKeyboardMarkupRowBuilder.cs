@@ -3,8 +3,15 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Fluegram.Keyboards.Builders.Reply;
 
-public class ReplyKeyboardMarkupRowBuilder : KeyboardMarkupRowBuilderBase<KeyboardButton>, IReplyKeyboardMarkupRowBuilder
+public class ReplyKeyboardMarkupRowBuilder : IReplyKeyboardMarkupRowBuilder
 {
+    private readonly List<KeyboardButton> _buttons;
+
+    public ReplyKeyboardMarkupRowBuilder()
+    {
+        _buttons = new();
+    }
+
     public IReplyKeyboardMarkupRowBuilder UseRequestContact(string text)
     {
         Use(KeyboardButton.WithRequestContact(text));
@@ -24,5 +31,17 @@ public class ReplyKeyboardMarkupRowBuilder : KeyboardMarkupRowBuilderBase<Keyboa
         Use(KeyboardButton.WithRequestPoll(text, type));
 
         return this;
+    }
+
+    public IReplyKeyboardMarkupRowBuilder Use(KeyboardButton button)
+    {
+        _buttons.Add(button);
+
+        return this;
+    }
+
+    public List<KeyboardButton> Build()
+    {
+        return _buttons;
     }
 }

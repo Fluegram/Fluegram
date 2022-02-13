@@ -1,9 +1,10 @@
-﻿using Telegram.Bot.Types;
+﻿using Fluegram.Abstractions.Builders;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Fluegram.Keyboards.Abstractions.Builders.Inline;
 
-public interface IInlineKeyboardMarkupRowBuilder : IKeyboardMarkupRowBuilder<InlineKeyboardButton>
+public interface IInlineKeyboardMarkupRowBuilder : IBuilder<List<InlineKeyboardButton>>
 {
     IInlineKeyboardMarkupRowBuilder UseUrl(string text, string url);
 
@@ -20,4 +21,6 @@ public interface IInlineKeyboardMarkupRowBuilder : IKeyboardMarkupRowBuilder<Inl
     IInlineKeyboardMarkupRowBuilder UseCallBackGame(string text, CallbackGame? callbackGame = default);
 
     IInlineKeyboardMarkupRowBuilder UsePayment(string text);
+    
+    IInlineKeyboardMarkupRowBuilder Use(InlineKeyboardButton button);
 }

@@ -1,11 +1,19 @@
-﻿using Fluegram.Keyboards.Abstractions.Builders.Inline;
+﻿using Fluegram.Abstractions.Builders;
+using Fluegram.Keyboards.Abstractions.Builders.Inline;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Fluegram.Keyboards.Builders.Inline;
 
-public class InlineKeyboardMarkupRowBuilder : KeyboardMarkupRowBuilderBase<InlineKeyboardButton>, IInlineKeyboardMarkupRowBuilder
+public class InlineKeyboardMarkupRowBuilder : IInlineKeyboardMarkupRowBuilder, IBuilder<List<InlineKeyboardButton>>
 {
+    private readonly List<InlineKeyboardButton> _buttons;
+
+    public InlineKeyboardMarkupRowBuilder()
+    {
+        _buttons = new();
+    }
+
     public IInlineKeyboardMarkupRowBuilder UseUrl(string text, string url)
     {
         Use(InlineKeyboardButton.WithUrl(text, url));
@@ -61,5 +69,17 @@ public class InlineKeyboardMarkupRowBuilder : KeyboardMarkupRowBuilderBase<Inlin
         Use(InlineKeyboardButton.WithPayment(text));
 
         return this;
+    }
+
+    public IInlineKeyboardMarkupRowBuilder Use(InlineKeyboardButton button)
+    {
+        _buttons.Add(button);
+
+        return this;
+    }
+
+    public List<InlineKeyboardButton> Build()
+    {
+        return _buttons;
     }
 }

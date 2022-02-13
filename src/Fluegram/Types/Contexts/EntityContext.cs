@@ -20,6 +20,11 @@ public class EntityContext<TEntity> : IEntityContext<TEntity> where TEntity : cl
         Components = components;
     }
 
+    public EntityContext(TEntity entity, IContext context) : this(entity, context.User, context.Chat, context.Client, context.Components)
+    {
+        
+    }
+
     public TEntity Entity { get; }
 
     public bool IsExecutionCancelled { get; private set; }

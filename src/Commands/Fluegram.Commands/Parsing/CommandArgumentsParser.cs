@@ -49,11 +49,14 @@ public class CommandArgumentsParser : ICommandArgumentsParser
 
         TextSegmentCollection segments = new TextSegmentCollection(sourceText, _splitRegex, _useQuote, _useDoubleQuote);
 
+        int index = 1;
+
         foreach (var property in properties)
         {
             if (!segments.SegmentsAvailable)
             {
-                errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), null));
+                if(Nullable.GetUnderlyingType(property.PropertyType) is null)
+                    errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), null));
                 
                 break;
             }
@@ -67,17 +70,30 @@ public class CommandArgumentsParser : ICommandArgumentsParser
 
                 string segment = segments.Take();
 
+                if (index == properties.Length && property.PropertyType == typeof(string))
+                {
+                    segment = segments.ToString();
+
+                    segments = null!;
+                }
+                
                 Type argumentType = property.PropertyType;
 
                 object? argumentValue = null;
 
                 try
                 {
-                    argumentValue = Convert.ChangeType(segment, argumentType);
+                    if (Nullable.GetUnderlyingType(property.PropertyType) is { } underlyingType)
+                    {
+                        argumentValue = Convert.ChangeType(segment, underlyingType);
+                    }
+
+                    else argumentValue = Convert.ChangeType(segment, argumentType);
                 }
                 catch (Exception exception)
                 {
-                    errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), exception));
+                    if(Nullable.GetUnderlyingType(property.PropertyType) is null)
+                        errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), exception));
                 }
 
                 if (argumentValue is null && _components.ResolveOptional(typeof(ICommandArgumentTypeResolver<>).MakeGenericType(argumentType)) is { } resolver)
@@ -97,10 +113,13 @@ public class CommandArgumentsParser : ICommandArgumentsParser
                     }
                 }
                 
-                if(argumentValue is null && !IsNullable(argumentType))
+                if(argumentValue is null && !IsNullable(argumentType) && errors[^1].Argument.Name != property.Name)
                     errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), null));
                 
-                property.SetValue(arguments, argumentValue);
+                if(argumentValue is not null)
+                    property.SetValue(arguments, argumentValue);
+
+                index++;
             }
         }
 

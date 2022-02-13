@@ -60,28 +60,25 @@ public class FluegramBot : IFluegramBot
         CancellationToken cancellationToken)
         where TEntity : class
     {
-        IPipeline<TEntity> typedPipeline;
-
-        if (!_pipelines.TryGetValue(update.Type, out var pipeline) && pipeline is not IPipeline<TEntity>)
+        if (_pipelines.TryGetValue(update.Type, out var pipeline) && pipeline is IPipeline<TEntity>)
         {
+            Type entityContextType = pipeline.GetType().GetGenericArguments()[0];
+
+            var processMethod = this.GetMethod(nameof(ProcessEntityWithContextAsync))!.MakeGenericMethod(
+                entityContextType,
+                entity.GetType());
+
+            return (Task)processMethod.Invoke(this, new object?[]
+            {
+                pipeline,
+                entity,
+                user,
+                chat,
+                cancellationToken
+            })!;
         }
 
-        typedPipeline = pipeline as IPipeline<TEntity>;
-
-        Type entityContextType = typedPipeline.GetType().GetGenericArguments()[0];
-
-        var processMethod = this.GetMethod(nameof(ProcessEntityWithContextAsync))!.MakeGenericMethod(
-            entityContextType,
-            entity.GetType());
-
-        return (Task)processMethod.Invoke(this, new object?[]
-        {
-            typedPipeline,
-            entity,
-            user,
-            chat,
-            cancellationToken
-        })!;
+        return Task.CompletedTask;
     }
 
     private Task ProcessEntityWithContextAsync<TEntityContext, TEntity>(IPipeline<TEntityContext, TEntity> pipeline,

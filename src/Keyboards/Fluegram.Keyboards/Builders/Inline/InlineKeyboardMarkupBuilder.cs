@@ -10,7 +10,7 @@ public class InlineKeyboardMarkupBuilder : KeyboardMarkupBuilderBase<InlineKeybo
         return new InlineKeyboardMarkup(buttons);
     }
 
-    protected override InlineKeyboardMarkupRowBuilder CreateRowBuilder()
+    protected override IInlineKeyboardMarkupRowBuilder CreateRowBuilder()
     {
         return new InlineKeyboardMarkupRowBuilder();
     }
