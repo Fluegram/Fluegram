@@ -37,24 +37,20 @@ public static class PipelineBuilderExtensions
         public ReflectionHandlersConfigurator<TEntityContext, TEntity> UseFromType<T>(
             params Expression<Func<T, Delegate>>[] selectors) where T : class
         {
-            List<MethodInfo> handlers = new List<MethodInfo>();
+            var handlers = new List<MethodInfo>();
 
             if (selectors is { Length: > 0 })
             {
                 foreach (var selector in selectors)
-                {
                     if (selector.Compile()(default!).Method is { ReturnType: { } returnType } method &&
                         returnType == typeof(Task))
                         handlers.Add(method);
-                }
             }
             else
             {
                 foreach (var method in typeof(T).GetRuntimeMethods())
-                {
                     if (method.IsTaskMethod())
                         handlers.Add(method);
-                }
             }
 
             if (typeof(T).IsInstantiableType())
@@ -62,9 +58,9 @@ public static class PipelineBuilderExtensions
 
             foreach (var handler in handlers)
             {
-                string name = Guid.NewGuid().ToString();
-                
-                ReflectionHandlerDescriptor<TEntityContext, TEntity> descriptor =
+                var name = Guid.NewGuid().ToString();
+
+                var descriptor =
                     ReflectionHandlerDescriptor<TEntityContext, TEntity>.CreateFromMethodInfo(handler);
 
                 _pipelineBuilder.Components.RegisterType<ReflectionHandlerMiddleware<TEntityContext, TEntity>>()

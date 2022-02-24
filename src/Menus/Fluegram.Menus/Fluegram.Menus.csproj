@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Keyboards\Fluegram.Keyboards\Fluegram.Keyboards.csproj" />
-      <ProjectReference Include="..\..\Parameters\Fluegram.Parameters.Abstractions\Fluegram.Parameters.Abstractions.csproj" />
-      <ProjectReference Include="..\..\Parameters\Fluegram.Parameters\Fluegram.Parameters.csproj" />
-      <ProjectReference Include="..\..\Sessions\Fluegram.Sessions\Fluegram.Sessions.csproj" />
-      <ProjectReference Include="..\Fluegram.Menus.Abstractions\Fluegram.Menus.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Keyboards\Fluegram.Keyboards\Fluegram.Keyboards.csproj"/>
+        <ProjectReference Include="..\..\Parameters\Fluegram.Parameters.Abstractions\Fluegram.Parameters.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Parameters\Fluegram.Parameters\Fluegram.Parameters.csproj"/>
+        <ProjectReference Include="..\..\Sessions\Fluegram.Sessions\Fluegram.Sessions.csproj"/>
+        <ProjectReference Include="..\Fluegram.Menus.Abstractions\Fluegram.Menus.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>

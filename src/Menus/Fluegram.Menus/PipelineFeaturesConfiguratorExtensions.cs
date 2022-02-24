@@ -13,7 +13,7 @@ public static class PipelineFeaturesConfiguratorExtensions
         Action<MenusConfigurator<TEntityContext>> configureMenus)
         where TEntityContext : IEntityContext<CallbackQuery>
     {
-        MenusConfigurator<TEntityContext> configurator =
+        var configurator =
             new MenusConfigurator<TEntityContext>(featuresConfigurator.Components);
 
         configureMenus(configurator);
@@ -34,14 +34,13 @@ public static class PipelineFeaturesConfiguratorExtensions
         public MenusConfigurator<TEntityContext> Use<TMenu>(Action<MenuConfigurator<TMenu>> configureMenu)
             where TMenu : class, IMenu, new()
         {
-            TMenu menu = new TMenu();
+            var menu = new TMenu();
 
-            
-            
-            MenuConfigurator<TMenu> menuConfigurator = new MenuConfigurator<TMenu>(menu, _containerBuilder);
-            
+
+            var menuConfigurator = new MenuConfigurator<TMenu>(menu, _containerBuilder);
+
             configureMenu(menuConfigurator);
-            
+
             _containerBuilder.RegisterInstance(menu);
 
             return this;
@@ -51,8 +50,8 @@ public static class PipelineFeaturesConfiguratorExtensions
             where TMenu : class, IMenu, new()
         {
             private readonly ContainerBuilder _containerBuilder;
-            
-            private TMenu _menu;
+
+            private readonly TMenu _menu;
 
             public MenuConfigurator(TMenu menu, ContainerBuilder containerBuilder)
             {
@@ -66,27 +65,27 @@ public static class PipelineFeaturesConfiguratorExtensions
                 var subMenu = new TSubMenu();
 
                 subMenu.Parent = _menu;
-                
+
                 _menu.Add(subMenu);
-                
+
                 _containerBuilder.RegisterInstance(subMenu);
 
                 return this;
             }
-            
+
             public MenuConfigurator<TMenu> Use<TSubMenu>(Action<MenuConfigurator<TSubMenu>> configureSubMenu)
                 where TSubMenu : class, IMenu, new()
             {
-                TSubMenu subMenu = new TSubMenu();
+                var subMenu = new TSubMenu();
 
                 subMenu.Parent = _menu;
-                
-                MenuConfigurator<TSubMenu> subMenuConfigurator = new MenuConfigurator<TSubMenu>(subMenu, _containerBuilder);
-                
+
+                var subMenuConfigurator = new MenuConfigurator<TSubMenu>(subMenu, _containerBuilder);
+
                 configureSubMenu(subMenuConfigurator);
-                
+
                 _containerBuilder.RegisterInstance(subMenu);
-                
+
                 _menu.Add(subMenu);
 
                 return this;

@@ -2,7 +2,7 @@
 
 namespace Fluegram.Keyboards.Abstractions.Builders.Inline;
 
-public interface IInlineKeyboardMarkupBuilder : IKeyboardMarkupBuilder<InlineKeyboardMarkup, IInlineKeyboardMarkupRowBuilder, InlineKeyboardButton>
+public interface IInlineKeyboardMarkupBuilder : IKeyboardMarkupBuilder<InlineKeyboardMarkup,
+    IInlineKeyboardMarkupRowBuilder, InlineKeyboardButton>
 {
-    
 }

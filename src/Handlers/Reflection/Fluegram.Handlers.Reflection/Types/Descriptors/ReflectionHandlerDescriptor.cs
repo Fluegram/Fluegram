@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using Fluegram.Abstractions.Types.Contexts;
 using Fluegram.Actions.Abstractions;
-using Fluegram.Handlers.Reflection.Abstractions.Types.Descriptors;
 using Fluegram.Filters.Abstractions.Filtering;
+using Fluegram.Handlers.Reflection.Abstractions.Types.Descriptors;
+using TypeExtensions = Fluegram.Filters.TypeExtensions;
 
 namespace Fluegram.Handlers.Reflection.Types.Descriptors;
 
@@ -12,11 +13,11 @@ public struct
 {
     public static ReflectionHandlerDescriptor<TEntityContext, TEntity> CreateFromMethodInfo(MethodInfo methodInfo)
     {
-        var filters = Fluegram.Filters.TypeExtensions.FindFiltersFor<TEntityContext, TEntity>(methodInfo).ToArray();
+        var filters = TypeExtensions.FindFiltersFor<TEntityContext, TEntity>(methodInfo).ToArray();
 
-        var preProcessingActions = Fluegram.Actions.TypeExtensions
+        var preProcessingActions = Actions.TypeExtensions
             .FindPreProcessingActionsFor<TEntityContext, TEntity>(methodInfo).ToArray();
-        var postProcessingActions = Fluegram.Actions.TypeExtensions
+        var postProcessingActions = Actions.TypeExtensions
             .FindPostProcessingActionsFor<TEntityContext, TEntity>(methodInfo).ToArray();
 
 

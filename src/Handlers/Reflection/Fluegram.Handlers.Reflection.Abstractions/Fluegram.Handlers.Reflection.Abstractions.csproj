@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Filters\Fluegram.Filters.Abstractions\Fluegram.Filters.Abstractions.csproj" />
-      <ProjectReference Include="..\..\..\Fluegram.Abstractions\Fluegram.Abstractions.csproj" />
+        <ProjectReference Include="..\..\..\Filters\Fluegram.Filters.Abstractions\Fluegram.Filters.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\..\Fluegram.Abstractions\Fluegram.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -2,7 +2,10 @@
 
 namespace Fluegram.Keyboards.Abstractions.Builders;
 
-public interface IKeyboardMarkupBuilder<TKeyboardMarkup, TKeyboardMarkupRowBuilder, TKeyboardMarkupButton> : IBuilder<TKeyboardMarkup>
+public interface
+    IKeyboardMarkupBuilder<TKeyboardMarkup, TKeyboardMarkupRowBuilder,
+        TKeyboardMarkupButton> : IBuilder<TKeyboardMarkup>
 {
-    IKeyboardMarkupBuilder<TKeyboardMarkup, TKeyboardMarkupRowBuilder, TKeyboardMarkupButton> UseRow(Action<TKeyboardMarkupRowBuilder> configureRow);
+    IKeyboardMarkupBuilder<TKeyboardMarkup, TKeyboardMarkupRowBuilder, TKeyboardMarkupButton> UseRow(
+        Action<TKeyboardMarkupRowBuilder> configureRow);
 }

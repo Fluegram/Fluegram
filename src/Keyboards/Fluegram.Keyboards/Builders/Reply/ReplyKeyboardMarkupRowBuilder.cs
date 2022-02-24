@@ -9,7 +9,7 @@ public class ReplyKeyboardMarkupRowBuilder : IReplyKeyboardMarkupRowBuilder
 
     public ReplyKeyboardMarkupRowBuilder()
     {
-        _buttons = new();
+        _buttons = new List<KeyboardButton>();
     }
 
     public IReplyKeyboardMarkupRowBuilder UseRequestContact(string text)

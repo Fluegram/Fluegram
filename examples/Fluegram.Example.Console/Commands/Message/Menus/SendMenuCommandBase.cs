@@ -12,7 +12,8 @@ public abstract class SendMenuCommandBase<TMenu> : CommandBase<Telegram.Bot.Type
     {
     }
 
-    public override Task ProcessAsync(EntityContext<Telegram.Bot.Types.Message> entityContext, CancellationToken cancellationToken)
+    public override Task ProcessAsync(EntityContext<Telegram.Bot.Types.Message> entityContext,
+        CancellationToken cancellationToken)
     {
         return entityContext.SendMenuAsync<TMenu>(cancellationToken);
     }

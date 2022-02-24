@@ -3,7 +3,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Fluegram.Keyboards.Builders.Inline;
 
-public class InlineKeyboardMarkupBuilder : KeyboardMarkupBuilderBase<InlineKeyboardMarkup, IInlineKeyboardMarkupRowBuilder, InlineKeyboardButton>, IInlineKeyboardMarkupBuilder
+public class InlineKeyboardMarkupBuilder :
+    KeyboardMarkupBuilderBase<InlineKeyboardMarkup, IInlineKeyboardMarkupRowBuilder, InlineKeyboardButton>,
+    IInlineKeyboardMarkupBuilder
 {
     protected override InlineKeyboardMarkup Build(IEnumerable<IEnumerable<InlineKeyboardButton>> buttons)
     {
@@ -14,5 +16,4 @@ public class InlineKeyboardMarkupBuilder : KeyboardMarkupBuilderBase<InlineKeybo
     {
         return new InlineKeyboardMarkupRowBuilder();
     }
-
 }

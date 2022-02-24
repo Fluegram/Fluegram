@@ -2,7 +2,8 @@
 
 namespace Fluegram.Commands.Parsing;
 
-public class CommandArgumentsFailedParseResult<TArguments> : CommandArgumentsParseResultBase<TArguments>, ICommandArgumentsFailedParseResult<TArguments>
+public class CommandArgumentsFailedParseResult<TArguments> : CommandArgumentsParseResultBase<TArguments>,
+    ICommandArgumentsFailedParseResult<TArguments>
     where TArguments : class, new()
 {
     public CommandArgumentsFailedParseResult(bool success, IEnumerable<ICommandArgumentParseError> errors) : base(success)

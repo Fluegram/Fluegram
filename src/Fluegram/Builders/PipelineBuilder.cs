@@ -14,8 +14,8 @@ namespace Fluegram.Builders;
 public class PipelineBuilder<TEntityContext, TEntity> : IPipelineBuilder<TEntityContext, TEntity>
     where TEntityContext : IEntityContext<TEntity> where TEntity : class
 {
-    private readonly UpdateType _updateType;
     private readonly IList<IMiddlewareDescriptor<TEntityContext, TEntity>> _middlewareDescriptors;
+    private readonly UpdateType _updateType;
 
     public PipelineBuilder(UpdateType updateType, ContainerBuilder components)
     {
@@ -27,36 +27,42 @@ public class PipelineBuilder<TEntityContext, TEntity> : IPipelineBuilder<TEntity
 
     public ContainerBuilder Components { get; }
 
-    public IPipelineBuilder<TEntityContext, TEntity> Use<TMiddleware>() where TMiddleware : class, IMiddleware<TEntityContext, TEntity>
+    public IPipelineBuilder<TEntityContext, TEntity> Use<TMiddleware>()
+        where TMiddleware : class, IMiddleware<TEntityContext, TEntity>
     {
         Components.RegisterType<TMiddleware>().IfNotRegistered(typeof(TMiddleware));
-        
+
         _middlewareDescriptors.Add(MiddlewareDescriptor<TEntityContext, TEntity>.CreateFromMiddleware<TMiddleware>());
 
         return this;
     }
 
-    public IPipelineBuilder<TEntityContext, TEntity> UseWhen(MiddlewareConditionDelegate<TEntityContext, TEntity> condition, Action<IPipelineBuilder<TEntityContext, TEntity>> configureInnerPipeline)
+    public IPipelineBuilder<TEntityContext, TEntity> UseWhen(
+        MiddlewareConditionDelegate<TEntityContext, TEntity> condition,
+        Action<IPipelineBuilder<TEntityContext, TEntity>> configureInnerPipeline)
     {
         var innerPipelineBuilder = new PipelineBuilder<TEntityContext, TEntity>(_updateType, Components);
 
         configureInnerPipeline(innerPipelineBuilder);
 
         var innerPipeline = innerPipelineBuilder.Build();
-        
-        string name = Guid.NewGuid().ToString();
+
+        var name = Guid.NewGuid().ToString();
 
         Components.RegisterType<ConditionalMiddleware<TEntityContext, TEntity>>()
             .WithParameter(new PositionalParameter(0, innerPipeline))
             .WithParameter(new PositionalParameter(1, condition))
             .Named<ConditionalMiddleware<TEntityContext, TEntity>>(name);
 
-        _middlewareDescriptors.Add(MiddlewareDescriptor<TEntityContext, TEntity>.CreateFromMiddleware<ConditionalMiddleware<TEntityContext, TEntity>>(name));
-        
+        _middlewareDescriptors.Add(MiddlewareDescriptor<TEntityContext, TEntity>
+            .CreateFromMiddleware<ConditionalMiddleware<TEntityContext, TEntity>>(name));
+
         return this;
     }
 
-    public IPipelineBuilder<TEntityContext, TEntity> UseDescriptor<TMiddlewareDescriptor>(TMiddlewareDescriptor descriptor) where TMiddlewareDescriptor : IMiddlewareDescriptor<TEntityContext, TEntity>
+    public IPipelineBuilder<TEntityContext, TEntity>
+        UseDescriptor<TMiddlewareDescriptor>(TMiddlewareDescriptor descriptor)
+        where TMiddlewareDescriptor : IMiddlewareDescriptor<TEntityContext, TEntity>
     {
         _middlewareDescriptors.Add(descriptor);
 

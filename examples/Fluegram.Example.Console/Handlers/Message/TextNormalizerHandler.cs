@@ -8,29 +8,27 @@ namespace Fluegram.Example.Console.Handlers.Message;
 
 public class TextNormalizerHandler : HandlerBase<Telegram.Bot.Types.Message>
 {
-    private readonly IEntityTextManipulator<Telegram.Bot.Types.Message> _entityTextManipulator;
-    private readonly BotInformationService _botInformationService;
-
     private readonly Regex _appealRegex;
-    
-    public TextNormalizerHandler(IEntityTextManipulator<Telegram.Bot.Types.Message> entityTextManipulator, BotInformationService botInformationService)
+    private readonly BotInformationService _botInformationService;
+    private readonly IEntityTextManipulator<Telegram.Bot.Types.Message> _entityTextManipulator;
+
+    public TextNormalizerHandler(IEntityTextManipulator<Telegram.Bot.Types.Message> entityTextManipulator,
+        BotInformationService botInformationService)
     {
         _entityTextManipulator = entityTextManipulator;
         _botInformationService = botInformationService;
         _appealRegex = new Regex($"/(?<CommandId>\\w+)(@{_botInformationService.Bot.Username})?");
     }
-    
-    public override async Task HandleAsync(EntityContext<Telegram.Bot.Types.Message> entityContext, CancellationToken cancellationToken)
+
+    public override async Task HandleAsync(EntityContext<Telegram.Bot.Types.Message> entityContext,
+        CancellationToken cancellationToken)
     {
         var text = _entityTextManipulator.Get(entityContext.Entity);
 
-        string resultText = text;
-        
-        if (_appealRegex.Match(text) is { Success: true, Groups: { } groups })
-        {
-            resultText = groups["CommandId"].Value;
-        }
-        
+        var resultText = text;
+
+        if (_appealRegex.Match(text) is { Success: true, Groups: { } groups }) resultText = groups["CommandId"].Value;
+
         _entityTextManipulator.Set(entityContext.Entity, resultText);
     }
 }

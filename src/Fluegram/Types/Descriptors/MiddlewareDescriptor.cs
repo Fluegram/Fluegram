@@ -8,7 +8,10 @@ public struct MiddlewareDescriptor<TEntityContext, TEntity> : IMiddlewareDescrip
     where TEntityContext : IEntityContext<TEntity> where TEntity : class
 {
     public static MiddlewareDescriptor<TEntityContext, TEntity> CreateFromMiddleware<TMiddleware>(string? key = null)
-        where TMiddleware : IMiddleware<TEntityContext, TEntity> => new(typeof(TMiddleware), key);
+        where TMiddleware : IMiddleware<TEntityContext, TEntity>
+    {
+        return new MiddlewareDescriptor<TEntityContext, TEntity>(typeof(TMiddleware), key);
+    }
 
     private MiddlewareDescriptor(Type? type, string? key)
     {

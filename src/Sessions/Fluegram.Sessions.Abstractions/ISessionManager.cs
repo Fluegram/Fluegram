@@ -7,5 +7,4 @@ public interface ISessionManager<TEntityContext, TEntity>
     where TEntity : class
 {
     ISession<TEntityContext, TEntity> GetOrCreate(long ownerId, long chatId);
-
 }

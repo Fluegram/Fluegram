@@ -9,22 +9,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Commands\Fluegram.Commands\Fluegram.Commands.csproj" />
-      <ProjectReference Include="..\..\src\Fluegram\Fluegram.csproj" />
-      <ProjectReference Include="..\..\src\Handlers\Fluegram.Handlers\Fluegram.Handlers.csproj" />
-      <ProjectReference Include="..\..\src\Handlers\Reflection\Fluegram.Handlers.Reflection\Fluegram.Handlers.Reflection.csproj" />
-      <ProjectReference Include="..\..\src\Keyboards\Fluegram.Keyboards\Fluegram.Keyboards.csproj" />
-      <ProjectReference Include="..\..\src\Menus\Fluegram.Menus\Fluegram.Menus.csproj" />
-      <ProjectReference Include="..\..\src\Parameters\Fluegram.Parameters\Fluegram.Parameters.csproj" />
-      <ProjectReference Include="..\..\src\Sessions\Fluegram.Sessions\Fluegram.Sessions.csproj" />
-      <ProjectReference Include="..\..\src\Widgets\Fluegram.Widgets\Fluegram.Widgets.csproj" />
+        <ProjectReference Include="..\..\src\Commands\Fluegram.Commands\Fluegram.Commands.csproj" />
+        <ProjectReference Include="..\..\src\Fluegram\Fluegram.csproj" />
+        <ProjectReference Include="..\..\src\Handlers\Fluegram.Handlers\Fluegram.Handlers.csproj" />
+        <ProjectReference Include="..\..\src\Handlers\Reflection\Fluegram.Handlers.Reflection\Fluegram.Handlers.Reflection.csproj" />
+        <ProjectReference Include="..\..\src\Keyboards\Fluegram.Keyboards\Fluegram.Keyboards.csproj" />
+        <ProjectReference Include="..\..\src\Menus\Fluegram.Menus\Fluegram.Menus.csproj" />
+        <ProjectReference Include="..\..\src\Parameters\Fluegram.Parameters\Fluegram.Parameters.csproj" />
+        <ProjectReference Include="..\..\src\Sessions\Fluegram.Sessions\Fluegram.Sessions.csproj" />
+        <ProjectReference Include="..\..\src\Widgets\Fluegram.Widgets\Fluegram.Widgets.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
-      <PackageReference Include="Humanizer.Core.ru" Version="2.14.1" />
-      <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.2-mauipre.1.22054.8" />
-      <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
+        <PackageReference Include="CommandLineParser" Version="2.9.0-preview1" />
+        <PackageReference Include="Humanizer.Core.ru" Version="2.14.1" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.2-mauipre.1.22054.8" />
+        <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="2.0.0-alpha.1" />
     </ItemGroup>
 
 </Project>

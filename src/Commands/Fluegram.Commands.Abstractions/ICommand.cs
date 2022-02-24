@@ -8,7 +8,7 @@ public interface ICommand<TEntityContext, TEntity>
     where TEntity : class
 {
     string Id { get; }
-    
+
     Task ProcessAsync(TEntityContext entityContext, CancellationToken cancellationToken);
 }
 
@@ -18,8 +18,9 @@ public interface ICommand<TEntityContext, TEntity, TArguments>
     where TArguments : class, new()
 {
     string Id { get; }
-    
+
     Task ProcessAsync(TEntityContext entityContext, TArguments arguments, CancellationToken cancellationToken);
 
-    Task ProcessInvalidArgumentsAsync(TEntityContext entityContext, IEnumerable<ICommandArgumentParseError> argumentsParseErrors, CancellationToken cancellationToken);
+    Task ProcessInvalidArgumentsAsync(TEntityContext entityContext,
+        IEnumerable<ICommandArgumentParseError> argumentsParseErrors, CancellationToken cancellationToken);
 }

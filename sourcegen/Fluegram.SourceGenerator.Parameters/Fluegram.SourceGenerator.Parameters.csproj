@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0-3.final" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" />
-        <PackageReference Include="Telegram.Bot" Version="17.0.0" GeneratePathProperty="true" PrivateAssets="all"/>
+        <PackageReference Include="Telegram.Bot" Version="18.0.0-alpha.1" GeneratePathProperty="true" PrivateAssets="all" />
     </ItemGroup>
 
 
@@ -22,5 +22,5 @@
             <TargetPathWithTargetPlatformMoniker Include="$(PKGTelegram_Bot)\lib\netstandard2.0\Telegram.Bot.dll" IncludeRuntimeDependency="false" />
         </ItemGroup>
     </Target>
-    
+
 </Project>

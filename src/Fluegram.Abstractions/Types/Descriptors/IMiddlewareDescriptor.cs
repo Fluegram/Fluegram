@@ -6,5 +6,4 @@ public interface IMiddlewareDescriptor<TEntityContext, TEntity> : ITypedDescript
     where TEntityContext : IEntityContext<TEntity>
     where TEntity : class
 {
-    
 }

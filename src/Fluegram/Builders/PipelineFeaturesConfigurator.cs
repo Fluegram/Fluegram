@@ -4,7 +4,8 @@ using Fluegram.Abstractions.Types.Contexts;
 
 namespace Fluegram.Builders;
 
-public class PipelineFeaturesConfigurator<TEntityContext, TEntity> : IPipelineFeaturesConfigurator<TEntityContext, TEntity>
+public class
+    PipelineFeaturesConfigurator<TEntityContext, TEntity> : IPipelineFeaturesConfigurator<TEntityContext, TEntity>
     where TEntityContext : IEntityContext<TEntity> where TEntity : class
 {
     public PipelineFeaturesConfigurator(ContainerBuilder components)

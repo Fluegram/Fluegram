@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Autofac.Core;
 using Fluegram.Abstractions.Builders;
 using Fluegram.Builders;
 
@@ -12,7 +11,7 @@ public static class ContainerBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(containerBuilder);
         ArgumentNullException.ThrowIfNull(configure);
-        
+
         var fluegramBotBuilder = new FluegramBotBuilder(containerBuilder);
 
         configure(fluegramBotBuilder);

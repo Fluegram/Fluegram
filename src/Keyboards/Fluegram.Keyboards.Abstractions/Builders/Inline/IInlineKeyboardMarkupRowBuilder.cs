@@ -21,6 +21,6 @@ public interface IInlineKeyboardMarkupRowBuilder : IBuilder<List<InlineKeyboardB
     IInlineKeyboardMarkupRowBuilder UseCallBackGame(string text, CallbackGame? callbackGame = default);
 
     IInlineKeyboardMarkupRowBuilder UsePayment(string text);
-    
+
     IInlineKeyboardMarkupRowBuilder Use(InlineKeyboardButton button);
 }

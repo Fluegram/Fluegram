@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Handlers\Fluegram.Handlers.Abstractions\Fluegram.Handlers.Abstractions.csproj" />
-      <ProjectReference Include="..\..\Handlers\Fluegram.Handlers\Fluegram.Handlers.csproj" />
-      <ProjectReference Include="..\Fluegram.Sessions.Abstractions\Fluegram.Sessions.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Handlers\Fluegram.Handlers.Abstractions\Fluegram.Handlers.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Handlers\Fluegram.Handlers\Fluegram.Handlers.csproj" />
+        <ProjectReference Include="..\Fluegram.Sessions.Abstractions\Fluegram.Sessions.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

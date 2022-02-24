@@ -8,5 +8,6 @@ namespace Fluegram.Abstractions.Factories.Contexts;
 public interface IEntityContextFactory<TEntityContext, TEntity>
     where TEntityContext : IEntityContext<TEntity> where TEntity : class
 {
-    TEntityContext Create(TEntity entity, User? user, Chat? chat, ITelegramBotClient telegramBotClient, IComponentContext components);
+    TEntityContext Create(TEntity entity, User? user, Chat? chat, ITelegramBotClient telegramBotClient,
+        IComponentContext components);
 }

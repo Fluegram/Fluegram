@@ -11,7 +11,7 @@ public class InlineKeyboardMarkupRowBuilder : IInlineKeyboardMarkupRowBuilder, I
 
     public InlineKeyboardMarkupRowBuilder()
     {
-        _buttons = new();
+        _buttons = new List<InlineKeyboardButton>();
     }
 
     public IInlineKeyboardMarkupRowBuilder UseUrl(string text, string url)
@@ -54,7 +54,6 @@ public class InlineKeyboardMarkupRowBuilder : IInlineKeyboardMarkupRowBuilder, I
         Use(InlineKeyboardButton.WithSwitchInlineQueryCurrentChat(text, query));
 
         return this;
-        
     }
 
     public IInlineKeyboardMarkupRowBuilder UseCallBackGame(string text, CallbackGame? callbackGame = default)

@@ -13,7 +13,13 @@ public class FuncEntityTextManipulator<TEntity> : IEntityTextManipulator<TEntity
         _setFunc = setFunc;
     }
 
-    public string Get(TEntity entity) => _getFunc(entity);
+    public string Get(TEntity entity)
+    {
+        return _getFunc(entity);
+    }
 
-    public void Set(TEntity entity, string value) => _setFunc(entity, value);
+    public void Set(TEntity entity, string value)
+    {
+        _setFunc(entity, value);
+    }
 }

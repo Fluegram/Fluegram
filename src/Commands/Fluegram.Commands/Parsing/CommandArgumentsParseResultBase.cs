@@ -2,7 +2,8 @@
 
 namespace Fluegram.Commands.Parsing;
 
-public abstract class CommandArgumentsParseResultBase<TArguments> : ICommandArgumentsParseResult<TArguments> where TArguments : class, new()
+public abstract class CommandArgumentsParseResultBase<TArguments> : ICommandArgumentsParseResult<TArguments>
+    where TArguments : class, new()
 {
     protected CommandArgumentsParseResultBase(bool success)
     {

@@ -21,9 +21,8 @@ public class Pipeline<TEntityContext, TEntity> : IPipeline<TEntityContext, TEnti
 
         if (type is UpdateType.Unknown)
         {
-            
         }
-        
+
         _middlewareDescriptors = middlewareDescriptors;
         Type = type;
     }
@@ -32,14 +31,12 @@ public class Pipeline<TEntityContext, TEntity> : IPipeline<TEntityContext, TEnti
     {
         foreach (var middlewareDescriptor in _middlewareDescriptors)
         {
-            if (entityContext.IsExecutionCancelled)
-            {
-                break;
-            }
-            
-            IMiddleware<TEntityContext, TEntity> middleware = (IMiddleware<TEntityContext, TEntity>)(
-                middlewareDescriptor.Name is {} name ? entityContext.Components.ResolveNamed(name, middlewareDescriptor.Type!) :                
-                entityContext.Components.Resolve(middlewareDescriptor.Type!));
+            if (entityContext.IsExecutionCancelled) break;
+
+            var middleware = (IMiddleware<TEntityContext, TEntity>)(
+                middlewareDescriptor.Name is { } name
+                    ? entityContext.Components.ResolveNamed(name, middlewareDescriptor.Type!)
+                    : entityContext.Components.Resolve(middlewareDescriptor.Type!));
 
             try
             {

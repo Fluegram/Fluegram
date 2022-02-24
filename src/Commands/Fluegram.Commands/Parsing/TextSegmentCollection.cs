@@ -10,23 +10,21 @@ internal class TextSegmentCollection
     {
         CurrentIndex = 0;
 
-        var segments = Regex.Matches(source, splitRegex)
+        _sourceSegments = Regex.Matches(source, splitRegex)
             .Select(_ =>
             {
-                CommandDataSegment? segmentValue = null;
+                CommandDataSegment segmentValue;
 
                 if (useQuote && _.Value.StartsWith("\'") && _.Value.EndsWith("\'"))
                     segmentValue = new CommandDataSegment(_.Value.Trim('\''), StringSegmentTrimMode.Quote);
-
+                
                 if (useDoubleQuote && _.Value.StartsWith("\"") && _.Value.EndsWith("\""))
                     segmentValue = new CommandDataSegment(_.Value.Trim('"'), StringSegmentTrimMode.Quote);
-
-                segmentValue ??= new CommandDataSegment(_.Value, StringSegmentTrimMode.None);
+                
+                segmentValue = new CommandDataSegment(_.Value, StringSegmentTrimMode.None);
 
                 return segmentValue;
-            });
-
-        _sourceSegments = segments.ToArray();
+            }).ToArray();
     }
 
     public int CurrentIndex { get; private set; }
@@ -34,7 +32,7 @@ internal class TextSegmentCollection
     public bool SegmentsAvailable => CurrentIndex < _sourceSegments.Length;
 
     public string this[int index] => _sourceSegments[index].Value;
-    
+
     public override string ToString()
     {
         var segments = _sourceSegments[CurrentIndex..];

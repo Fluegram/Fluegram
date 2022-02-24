@@ -8,16 +8,21 @@ namespace Fluegram.Example.Console.Commands.Message;
 
 public class CounterCommand : CommandBase<Telegram.Bot.Types.Message>
 {
-    private readonly IWidgetFactory<CounterWidget, EntityContext<Telegram.Bot.Types.Message>, Telegram.Bot.Types.Message, CounterState> _widgetFactory;
+    private readonly
+        IWidgetFactory<CounterWidget, EntityContext<Telegram.Bot.Types.Message>, Telegram.Bot.Types.Message,
+            CounterState> _widgetFactory;
 
-    public CounterCommand(IWidgetFactory<CounterWidget, EntityContext<Telegram.Bot.Types.Message>, Telegram.Bot.Types.Message, CounterState> widgetFactory) : base("counter")
+    public CounterCommand(
+        IWidgetFactory<CounterWidget, EntityContext<Telegram.Bot.Types.Message>, Telegram.Bot.Types.Message,
+            CounterState> widgetFactory) : base("counter")
     {
         _widgetFactory = widgetFactory;
     }
 
-    public override async Task ProcessAsync(EntityContext<Telegram.Bot.Types.Message> entityContext, CancellationToken cancellationToken)
+    public override async Task ProcessAsync(EntityContext<Telegram.Bot.Types.Message> entityContext,
+        CancellationToken cancellationToken)
     {
-        IWidgetController<EntityContext<Telegram.Bot.Types.Message>,Telegram.Bot.Types.Message,CounterState> widgetController 
+        var widgetController
             = await _widgetFactory.CreateAsync(entityContext, cancellationToken);
 
         while (true)

@@ -10,6 +10,6 @@ public interface IReplyKeyboardMarkupRowBuilder : IBuilder<List<KeyboardButton>>
     IReplyKeyboardMarkupRowBuilder UseRequestLocation(string text);
 
     IReplyKeyboardMarkupRowBuilder UseRequestPoll(string text, string? type = default);
-    
+
     IReplyKeyboardMarkupRowBuilder Use(KeyboardButton button);
 }

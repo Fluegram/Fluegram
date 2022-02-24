@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Fluegram.Filters.Abstractions\Fluegram.Filters.Abstractions.csproj" />
+        <ProjectReference Include="..\Fluegram.Filters.Abstractions\Fluegram.Filters.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>

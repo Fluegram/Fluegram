@@ -1,11 +1,9 @@
 ﻿using Autofac;
 using CommandLine;
-using CommandLine.Text;
 using Fluegram;
 using Fluegram.Abstractions;
 using Fluegram.Abstractions.Builders;
 using Fluegram.Commands;
-using Fluegram.Example.Console.Commands;
 using Fluegram.Example.Console.Commands.Message;
 using Fluegram.Example.Console.Commands.Message.Menus;
 using Fluegram.Example.Console.Handlers.Message;
@@ -23,12 +21,12 @@ using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-await CommandLine.Parser.Default.ParseArguments<CommandLineArguments>(args)
+await Parser.Default.ParseArguments<CommandLineArguments>(args)
     .WithParsedAsync(StartAsync);
 
 async Task StartAsync(CommandLineArguments arguments)
 {
-    ContainerBuilder containerBuilder = new ContainerBuilder();
+    var containerBuilder = new ContainerBuilder();
 
     ITelegramBotClient client = new TelegramBotClient(arguments.Token);
 
@@ -38,18 +36,18 @@ async Task StartAsync(CommandLineArguments arguments)
 
     containerBuilder.RegisterFluegram(ConfigureFluegramBot);
 
-    IContainer container = containerBuilder.Build();
+    var container = containerBuilder.Build();
 
     await container.Resolve<BotInformationService>().InitializeAsync();
 
-    IFluegramBot bot = container.Resolve<IFluegramBot>();
+    var bot = container.Resolve<IFluegramBot>();
 
 
-    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    var cancellationTokenSource = new CancellationTokenSource();
 
     ReceiverOptions receiverOptions = new()
     {
-        ThrowPendingUpdates = true,
+        ThrowPendingUpdates = true
     };
 
     await client.ReceiveAsync((_, update, token) => { bot.ProcessUpdateAsync(update, token).ConfigureAwait(false); },
@@ -75,13 +73,9 @@ void ConfigureFluegramBot(IFluegramBotBuilder fluegramBotBuilder)
         .UseEntityTextManipulator<Message>(_ => _.Text ?? _.Caption ?? "", (entity, text) =>
         {
             if (entity.Text is { Length: > 0 })
-            {
                 entity.Text = text;
-            }
             else
-            {
                 entity.Caption = text;
-            }
         }).UseCommandNameRetriever((ctx, id) => id));
 }
 
@@ -131,11 +125,4 @@ void ConfigureCallbackQueriesPipeline(IPipelineBuilder<EntityContext<CallbackQue
 {
     pipelineBuilder.UseHandlers(_ => _
         .Use<MenuHandler<EntityContext<CallbackQuery>, MainMenu>>());
-}
-
-
-public class CommandLineArguments
-{
-    [CommandLine.Option('t', "token", HelpText = "Telegram Bot API Token")]
-    public string Token { get; set; }
 }

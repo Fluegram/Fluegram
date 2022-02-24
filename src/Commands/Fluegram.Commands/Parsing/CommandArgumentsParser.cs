@@ -1,139 +1,107 @@
 ﻿using System.Reflection;
 using Autofac;
 using Fluegram.Commands.Abstractions.Parsing;
-using Fluegram.Commands.Attributes;
 
 namespace Fluegram.Commands.Parsing;
 
-public class CommandArgumentsParser : ICommandArgumentsParser
+public class CommandArgumentsParser<TArguments> : ICommandArgumentsParser<TArguments> where TArguments : class, new()
 {
-    private readonly bool _useQuote;
-    private readonly bool _useDoubleQuote;
-    private readonly StringComparison _stringComparison;
+    private readonly PropertyInfo[] _properties;
     private readonly IComponentContext _components;
 
-    private readonly string _splitRegex;
-
-    public CommandArgumentsParser(bool useQuote, bool useDoubleQuote, StringComparison stringComparison, IComponentContext components)
+    public CommandArgumentsParser(PropertyInfo[] properties, IComponentContext components)
     {
-        _useQuote = useQuote;
-        _useDoubleQuote = useDoubleQuote;
-        _stringComparison = stringComparison;
+        _properties = properties;
         _components = components;
-
-        _splitRegex = BuildSplitRegex();
     }
-    
-    private string BuildSplitRegex()
-    {
-        string quotePart = _useQuote ? "'" : "",
-            doubleQuotePart = _useDoubleQuote ? "\"" : "";
 
-        var regex = $"[^\\s{doubleQuotePart}{quotePart}]+";
-
-        if (_useDoubleQuote) regex += "|\"([^\"]+)\"";
-
-        if (_useQuote) regex += "|\'([^\']+)\'";
-
-        return regex;
-    }
-    
-    
-    public ICommandArgumentsParseResult<TArguments> Parse<TArguments>(string sourceText) where TArguments : class, new()
+    public ICommandArgumentsParseResult<TArguments> Parse(string sourceText)
     {
         TArguments arguments = new TArguments();
 
-        var properties = arguments.GetType().GetProperties();
+        TextSegmentCollection segments = _components.Resolve<TextSegmentCollection>(new PositionalParameter(0, sourceText));
 
-        List<ICommandArgumentParseError> errors = new List<ICommandArgumentParseError>(properties.Length);
+        ICommandArgumentParseError[] errors = Array.Empty<ICommandArgumentParseError>();
 
-        TextSegmentCollection segments = new TextSegmentCollection(sourceText, _splitRegex, _useQuote, _useDoubleQuote);
-
-        int index = 1;
-
-        foreach (var property in properties)
+        for (int index = 0; index < _properties.Length; index++)
         {
+            PropertyInfo propertyInfo = _properties[index];
+
             if (!segments.SegmentsAvailable)
             {
-                if(Nullable.GetUnderlyingType(property.PropertyType) is null)
-                    errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), null));
-                
+                AddError(new CommandArgumentParseError(new CommandArgument(propertyInfo.Name), null));
+
                 break;
             }
             
-            if (property.GetCustomAttribute<CommandArgumentAttribute>() is { })
+            string segment = segments.Take();
+
+            bool argumentSet = false;
+            
+            if (propertyInfo.PropertyType == typeof(string))
             {
-                if (property.GetSetMethod() is null)
-                {
-                    throw new InvalidOperationException("Argument property should have public set accessor");
-                }
-
-                string segment = segments.Take();
-
-                if (index == properties.Length && property.PropertyType == typeof(string))
-                {
-                    segment = segments.ToString();
-
-                    segments = null!;
-                }
-                
-                Type argumentType = property.PropertyType;
-
-                object? argumentValue = null;
-
+                propertyInfo.SetValue(arguments, segment);
+                argumentSet = true;
+            }
+            else if (Type.GetTypeCode(propertyInfo.PropertyType) is { } typeCode && typeCode is not TypeCode.Object or TypeCode.Empty or TypeCode.DBNull)
+            {
                 try
                 {
-                    if (Nullable.GetUnderlyingType(property.PropertyType) is { } underlyingType)
-                    {
-                        argumentValue = Convert.ChangeType(segment, underlyingType);
-                    }
-
-                    else argumentValue = Convert.ChangeType(segment, argumentType);
+                    propertyInfo.SetValue(arguments, Convert.ChangeType(segment, typeCode));
+                    argumentSet = true;
                 }
                 catch (Exception exception)
                 {
-                    if(Nullable.GetUnderlyingType(property.PropertyType) is null)
-                        errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), exception));
+                    AddError(new CommandArgumentParseError(new CommandArgument(propertyInfo.Name), exception));
                 }
+            }
 
-                if (argumentValue is null && _components.ResolveOptional(typeof(ICommandArgumentTypeResolver<>).MakeGenericType(argumentType)) is { } resolver)
+            if (!argumentSet)
+            {
+                var resolver = _components.ResolveOptional(typeof(ICommandArgumentTypeResolver<>).MakeGenericType(propertyInfo.PropertyType));
+
+                if (resolver is { })
                 {
-                    var resolveMethod = resolver.GetType().GetMethod("Resolve")!;
-
                     try
                     {
-                        argumentValue = resolveMethod.Invoke(resolver, new[]
+                        object? argumentValue = resolver.GetType().GetMethod(nameof(ICommandArgumentTypeResolver<object>.Resolve))!.Invoke(resolver, new[] { segment });
+
+                        if (argumentValue is { })
                         {
-                            segment
-                        });
+                            propertyInfo.SetValue(arguments, argumentValue);
+                        }
+                        else
+                        {
+                            AddError(new CommandArgumentParseError(new CommandArgument(propertyInfo.Name), null));
+                        }
+
                     }
                     catch (Exception exception)
                     {
-                        errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), exception));
+                        AddError(new CommandArgumentParseError(new CommandArgument(propertyInfo.Name), exception));
                     }
                 }
-                
-                if(argumentValue is null && !IsNullable(argumentType) && errors[^1].Argument.Name != property.Name)
-                    errors.Add(new CommandArgumentParseError(new CommandArgument(property.Name), null));
-                
-                if(argumentValue is not null)
-                    property.SetValue(arguments, argumentValue);
-
-                index++;
+                else
+                {
+                    AddError(new CommandArgumentParseError(new CommandArgument(propertyInfo.Name), null));
+                }
             }
-        }
+        } 
 
-        if (errors.Count > 0)
+        if (errors.Length > 0)
         {
             return new CommandArgumentsFailedParseResult<TArguments>(false, errors);
         }
-        
+
         return new CommandArgumentsSuccessfulParseResult<TArguments>(true, arguments, segments.ToString());
-    }
-    
-    private static bool IsNullable(Type type)
-    {
-        if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
-        return false; // value-type
+        
+        
+        
+        void AddError(ICommandArgumentParseError error)
+        {
+            Array.Resize(ref errors, errors.Length + 1);
+
+            errors[^1] = error;
+        }
     }
 }

@@ -14,27 +14,25 @@ public class MenuHandler<TEntityContext, TMenu> : IHandler<TEntityContext, Callb
 {
     public async Task HandleAsync(TEntityContext entityContext, CancellationToken cancellationToken)
     {
-        TMenu menu = entityContext.Components.Resolve<TMenu>();
+        var menu = entityContext.Components.Resolve<TMenu>();
 
-        string callbackData = entityContext.Entity.Data!;
+        var callbackData = entityContext.Entity.Data!;
 
-        string[] callbackDataSegments =
+        var callbackDataSegments =
             callbackData.Split(":", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         IEnumerable<IMenu> menuItems = menu;
 
-        List<string> parentSegments = new List<string> { menu.Id };
+        var parentSegments = new List<string> { menu.Id };
 
         if (string.CompareOrdinal(menu.Id, callbackDataSegments[0]) is 0)
         {
-            int index = 1;
+            var index = 1;
 
             IMenu selectedItem = menu;
 
             while (menuItems.Any() && index < callbackDataSegments.Length)
-            {
                 foreach (var item in menuItems)
-                {
                     if (string.CompareOrdinal(item.Id, callbackDataSegments[index]) is 0)
                     {
                         selectedItem = item;
@@ -43,33 +41,27 @@ public class MenuHandler<TEntityContext, TMenu> : IHandler<TEntityContext, Callb
                         index++;
                         break;
                     }
-                }
-            }
 
             if (selectedItem is { Text: { } text })
             {
                 if (selectedItem.Any())
                 {
-                    InlineKeyboardMarkupBuilder builder = new InlineKeyboardMarkupBuilder();
+                    var builder = new InlineKeyboardMarkupBuilder();
 
                     foreach (var item in selectedItem)
-                    {
                         builder.UseRow(_ => _.UseCallbackData(item.Name(entityContext),
                             string.Join(":", parentSegments.Append(item.Id))));
-                    }
 
                     if (parentSegments.Count > 1)
-                    {
                         builder.UseRow(_ =>
                             _.UseCallbackData("Return Back", string.Join(":", parentSegments.SkipLast(1))));
-                    }
 
                     var markup = builder.Build();
 
                     await entityContext.InvokeAsync<EditMessageTextParameters, Message>(_ => _
                         .UseMessageId(entityContext.Entity.Message!.MessageId)
                         .UseText(text(entityContext))
-                        .UseReplyMarkup(markup), cancellationToken: cancellationToken);
+                        .UseReplyMarkup(markup), cancellationToken);
                     return;
                 }
 

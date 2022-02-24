@@ -2,7 +2,8 @@
 
 namespace Fluegram.Keyboards.Abstractions.Builders.Reply;
 
-public interface IReplyKeyboardMarkupBuilder : IKeyboardMarkupBuilder<ReplyKeyboardMarkup, IReplyKeyboardMarkupRowBuilder, KeyboardButton>
+public interface
+    IReplyKeyboardMarkupBuilder : IKeyboardMarkupBuilder<ReplyKeyboardMarkup, IReplyKeyboardMarkupRowBuilder,
+        KeyboardButton>
 {
-    
 }

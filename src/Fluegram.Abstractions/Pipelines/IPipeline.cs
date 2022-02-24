@@ -10,7 +10,6 @@ public interface IPipeline
 
 public interface IPipeline<TEntity> : IPipeline
 {
-    
 }
 
 public interface IPipeline<TEntityContext, TEntity> : IPipeline<TEntity>

@@ -11,6 +11,9 @@ public class FuncCommandNameRetriever : ICommandNameRetriever
     {
         _retrieverFunc = retrieverFunc;
     }
-    
-    public string Retrieve(IContext entityContext, string commandId) => _retrieverFunc(entityContext, commandId);
+
+    public string Retrieve(IContext entityContext, string commandId)
+    {
+        return _retrieverFunc(entityContext, commandId);
+    }
 }

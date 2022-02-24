@@ -12,9 +12,6 @@ namespace Fluegram;
 
 public class FluegramBot : IFluegramBot
 {
-    public ITelegramBotClient Client { get; }
-    public IComponentContext Components { get; }
-
     private readonly IReadOnlyDictionary<UpdateType, IPipeline> _pipelines;
 
 
@@ -30,16 +27,18 @@ public class FluegramBot : IFluegramBot
         _pipelines = pipelines;
     }
 
+    public ITelegramBotClient Client { get; }
+    public IComponentContext Components { get; }
+
 
     public Task ProcessUpdateAsync(Update update, CancellationToken cancellationToken = default)
     {
-        User? user = update.GetUserFromUpdate();
-        Chat? chat = update.GetChatFromUpdate();
+        var user = update.GetUserFromUpdate();
+        var chat = update.GetChatFromUpdate();
 
-        object? entity = update.GetEntityFromUpdate();
+        var entity = update.GetEntityFromUpdate();
 
         if (entity is { })
-        {
             return (Task)this.GetMethod(nameof(ProcessEntityAsync))!.MakeGenericMethod(entity.GetType()).Invoke(this,
                 new[]
                 {
@@ -49,11 +48,7 @@ public class FluegramBot : IFluegramBot
                     chat,
                     cancellationToken
                 })!;
-        }
-        else
-        {
-            throw new InvalidOperationException("Cannot process update because it has Unknown type.");
-        }
+        throw new InvalidOperationException("Cannot process update because it has Unknown type.");
     }
 
     private Task ProcessEntityAsync<TEntity>(Update update, TEntity entity, User? user, Chat? chat,
@@ -62,7 +57,7 @@ public class FluegramBot : IFluegramBot
     {
         if (_pipelines.TryGetValue(update.Type, out var pipeline) && pipeline is IPipeline<TEntity>)
         {
-            Type entityContextType = pipeline.GetType().GetGenericArguments()[0];
+            var entityContextType = pipeline.GetType().GetGenericArguments()[0];
 
             var processMethod = this.GetMethod(nameof(ProcessEntityWithContextAsync))!.MakeGenericMethod(
                 entityContextType,
@@ -86,10 +81,10 @@ public class FluegramBot : IFluegramBot
         where TEntityContext : IEntityContext<TEntity>
         where TEntity : class
     {
-        IEntityContextFactory<TEntityContext, TEntity> entityContextFactory =
+        var entityContextFactory =
             Components.Resolve<IEntityContextFactory<TEntityContext, TEntity>>();
 
-        TEntityContext entityContext = entityContextFactory.Create(entity, user, chat, Client, Components);
+        var entityContext = entityContextFactory.Create(entity, user, chat, Client, Components);
 
         return pipeline.ProcessEntityAsync(entityContext, cancellationToken);
     }

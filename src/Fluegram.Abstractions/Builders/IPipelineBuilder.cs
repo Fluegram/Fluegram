@@ -10,7 +10,7 @@ public interface IPipelineBuilder<TEntityContext, TEntity> : IBuilder<IPipeline<
     where TEntityContext : IEntityContext<TEntity> where TEntity : class
 {
     ContainerBuilder Components { get; }
-    
+
     IPipelineBuilder<TEntityContext, TEntity> Use<TMiddleware>()
         where TMiddleware : class, IMiddleware<TEntityContext, TEntity>;
 

@@ -4,6 +4,6 @@ public interface ICommandArgumentsSuccessfulParseResult<TArguments> : ICommandAr
     where TArguments : class, new()
 {
     TArguments Arguments { get; }
-    
+
     string Text { get; }
 }

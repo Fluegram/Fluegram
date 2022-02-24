@@ -9,39 +9,38 @@ namespace Fluegram.Menus;
 
 public static class EntityContextExtensions
 {
-    public static Task SendMenuAsync<TMenu>(this IContext context, CancellationToken cancellationToken) where TMenu : IMenu
+    public static Task SendMenuAsync<TMenu>(this IContext context, CancellationToken cancellationToken)
+        where TMenu : IMenu
     {
-        TMenu menu = context.Components.Resolve<TMenu>();
-        
-        InlineKeyboardMarkupBuilder builder = new InlineKeyboardMarkupBuilder();
+        var menu = context.Components.Resolve<TMenu>();
 
-        List<string> parents = new List<string>();
+        var builder = new InlineKeyboardMarkupBuilder();
 
-        IMenu? current = menu.Parent;
+        var parents = new List<string>();
+
+        var current = menu.Parent;
 
         while (current != null)
         {
             parents.Add(current.Id);
-            
+
             current = current.Parent;
         }
 
         parents.Reverse();
-        
+
         foreach (var item in menu)
-        {
-            builder.UseRow(_ => _.UseCallbackData(item.Name(context), $"{String.Join(":", parents)}:{menu.Id}:{item.Id}"));
-        }
+            builder.UseRow(_ =>
+                _.UseCallbackData(item.Name(context), $"{string.Join(":", parents)}:{menu.Id}:{item.Id}"));
 
         if (menu.Parent is { } parent)
-        {
-            builder.UseRow(_ => _.UseCallbackData($"Return back to {parent.Name(context)}", $"{String.Join(":", parents)}"));
-        }
+            builder.UseRow(_ =>
+                _.UseCallbackData($"Return back to {parent.Name(context)}", $"{string.Join(":", parents)}"));
 
         var markup = builder.Build();
-        
+
         return context.InvokeAsync<SendTextMessageParameters, Message>(_ => _
             .UseText(menu.Text(context))
-            .UseReplyMarkup(markup), cancellationToken: cancellationToken);
+            .UseReplyMarkup(markup), cancellationToken);
     }
 }

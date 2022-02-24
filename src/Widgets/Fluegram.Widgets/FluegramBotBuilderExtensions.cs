@@ -8,13 +8,14 @@ namespace Fluegram.Widgets;
 public static class FluegramBotBuilderExtensions
 {
     public static IPipelineFeaturesConfigurator<TEntityContext, TEntity> UseWidgets<TEntityContext, TEntity>(
-        this IPipelineFeaturesConfigurator<TEntityContext, TEntity> featuresConfigurator, Action<WidgetsConfigurator<TEntityContext, TEntity>> configureWidgets)
+        this IPipelineFeaturesConfigurator<TEntityContext, TEntity> featuresConfigurator,
+        Action<WidgetsConfigurator<TEntityContext, TEntity>> configureWidgets)
         where TEntityContext : IEntityContext<TEntity> where TEntity : class
     {
         WidgetsConfigurator<TEntityContext, TEntity> configurator = new(featuresConfigurator.Components);
 
         configureWidgets(configurator);
-        
+
         return featuresConfigurator;
     }
 
@@ -32,7 +33,7 @@ public static class FluegramBotBuilderExtensions
             where TWidget : IWidget<TEntityContext, TEntity, TState> where TState : class, IWidgetState<TState>, new()
         {
             _containerBuilder.RegisterType<TWidget>();
-            
+
             _containerBuilder
                 .RegisterType<WidgetFactory<TWidget, TEntityContext, TEntity, TState>>()
                 .AsImplementedInterfaces()

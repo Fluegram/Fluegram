@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\sourcegen\Fluegram.SourceGenerator.Parameters\Fluegram.SourceGenerator.Parameters.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="..\..\Fluegram.Abstractions\Fluegram.Abstractions.csproj" />
-        <ProjectReference Include="..\Fluegram.Parameters.Abstractions\Fluegram.Parameters.Abstractions.csproj" />
+        <ProjectReference Include="..\..\..\sourcegen\Fluegram.SourceGenerator.Parameters\Fluegram.SourceGenerator.Parameters.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\..\Fluegram.Abstractions\Fluegram.Abstractions.csproj"/>
+        <ProjectReference Include="..\Fluegram.Parameters.Abstractions\Fluegram.Parameters.Abstractions.csproj"/>
     </ItemGroup>
-    
+
 </Project>

@@ -7,8 +7,8 @@ public interface IMenu : IList<IMenu>
     string Id { get; }
 
     IMenu? Parent { get; set; }
-    
+
     Func<IContext, string> Name { get; }
-    
+
     Func<IContext, string> Text { get; }
 }

@@ -2,5 +2,4 @@
 
 public interface IWidgetState<TState> where TState : IWidgetState<TState>
 {
-    
 }

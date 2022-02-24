@@ -7,12 +7,13 @@ namespace Fluegram.Types.Contexts;
 
 public class EntityContext<TEntity> : IEntityContext<TEntity> where TEntity : class
 {
-    public EntityContext(TEntity entity, User? user, Chat? chat, ITelegramBotClient client, IComponentContext components)
+    public EntityContext(TEntity entity, User? user, Chat? chat, ITelegramBotClient client,
+        IComponentContext components)
     {
         ArgumentNullException.ThrowIfNull(entity);
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(components);
-        
+
         Entity = entity;
         User = user;
         Chat = chat;
@@ -20,9 +21,9 @@ public class EntityContext<TEntity> : IEntityContext<TEntity> where TEntity : cl
         Components = components;
     }
 
-    public EntityContext(TEntity entity, IContext context) : this(entity, context.User, context.Chat, context.Client, context.Components)
+    public EntityContext(TEntity entity, IContext context) : this(entity, context.User, context.Chat, context.Client,
+        context.Components)
     {
-        
     }
 
     public TEntity Entity { get; }
@@ -37,6 +38,6 @@ public class EntityContext<TEntity> : IEntityContext<TEntity> where TEntity : cl
     public User? User { get; }
     public Chat? Chat { get; }
     public ITelegramBotClient Client { get; }
-    
+
     public IComponentContext Components { get; }
 }

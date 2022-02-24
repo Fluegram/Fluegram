@@ -16,8 +16,7 @@ public class FluegramBotBuilder : IFluegramBotBuilder
 {
     private readonly IDictionary<UpdateType, IPipeline> _pipelines;
 
-    public FluegramBotBuilder(
-        ContainerBuilder components)
+    public FluegramBotBuilder(ContainerBuilder components)
     {
         Components = components;
         _pipelines = new Dictionary<UpdateType, IPipeline>();
@@ -25,42 +24,46 @@ public class FluegramBotBuilder : IFluegramBotBuilder
 
     public IFluegramBot Build(IComponentContext componentContext)
     {
-        return new FluegramBot(componentContext.Resolve<ITelegramBotClient>(), componentContext, new ReadOnlyDictionary<UpdateType, IPipeline>(_pipelines));
+        return new FluegramBot(componentContext.Resolve<ITelegramBotClient>(), componentContext,
+            new ReadOnlyDictionary<UpdateType, IPipeline>(_pipelines));
     }
 
     public ContainerBuilder Components { get; }
-    
-    public IFluegramBotBuilder UseFor<TEntityContext, TEntity>(UpdateType updateType, 
+
+    public IFluegramBotBuilder UseFor<TEntityContext, TEntity>(UpdateType updateType,
         Action<IPipelineFeaturesConfigurator<TEntityContext, TEntity>> configureFeatures,
-        Action<IPipelineBuilder<TEntityContext, TEntity>> configurePipeline) where TEntityContext : IEntityContext<TEntity> where TEntity : class
+        Action<IPipelineBuilder<TEntityContext, TEntity>> configurePipeline)
+        where TEntityContext : IEntityContext<TEntity> where TEntity : class
     {
         if (_pipelines.ContainsKey(updateType))
-        {
-            throw new InvalidOperationException("Cannot configure a new pipeline because there is already a pipeline with the specified update type.");
-        }
+            throw new InvalidOperationException(
+                "Cannot configure a new pipeline because there is already a pipeline with the specified update type.");
 
-        PipelineFeaturesConfigurator<TEntityContext, TEntity> configurator = new PipelineFeaturesConfigurator<TEntityContext, TEntity>(Components);
+        var configurator =
+            new PipelineFeaturesConfigurator<TEntityContext, TEntity>(Components);
 
         configureFeatures(configurator);
-        
+
 
         if (typeof(TEntityContext) == typeof(EntityContext<TEntity>))
-        {
-            Components.RegisterType<EntityContextFactory<TEntity>>().As<IEntityContextFactory<TEntityContext, TEntity>>();    
-        }
-        
-        IPipelineBuilder<TEntityContext, TEntity> pipelineBuilder = new PipelineBuilder<TEntityContext, TEntity>(updateType, Components);
-        
+            Components.RegisterType<EntityContextFactory<TEntity>>()
+                .As<IEntityContextFactory<TEntityContext, TEntity>>();
+
+        IPipelineBuilder<TEntityContext, TEntity> pipelineBuilder =
+            new PipelineBuilder<TEntityContext, TEntity>(updateType, Components);
+
         configurePipeline?.Invoke(pipelineBuilder);
 
-        IPipeline<TEntityContext, TEntity> pipeline = pipelineBuilder.Build();
-        
+        var pipeline = pipelineBuilder.Build();
+
         _pipelines.Add(updateType, pipeline);
 
         return this;
     }
 
-    public IFluegramBotBuilder UseFor<TEntityContext, TEntity>(UpdateType updateType, Action<IPipelineBuilder<TEntityContext, TEntity>> configurePipeline) where TEntityContext : IEntityContext<TEntity> where TEntity : class
+    public IFluegramBotBuilder UseFor<TEntityContext, TEntity>(UpdateType updateType,
+        Action<IPipelineBuilder<TEntityContext, TEntity>> configurePipeline)
+        where TEntityContext : IEntityContext<TEntity> where TEntity : class
     {
         return UseFor(updateType, _ => { }, configurePipeline);
     }

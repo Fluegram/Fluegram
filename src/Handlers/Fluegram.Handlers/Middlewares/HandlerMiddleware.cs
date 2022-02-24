@@ -7,14 +7,15 @@ using Fluegram.Handlers.Abstractions.Middlewares;
 
 namespace Fluegram.Handlers.Middlewares;
 
-public class HandlerMiddleware<THandler, TEntityContext, TEntity> : IHandlerMiddleware<THandler, TEntityContext, TEntity>
+public class
+    HandlerMiddleware<THandler, TEntityContext, TEntity> : IHandlerMiddleware<THandler, TEntityContext, TEntity>
     where TEntityContext : IEntityContext<TEntity>
     where TEntity : class
     where THandler : IHandler<TEntityContext, TEntity>
 {
     public HandlerMiddleware(
         IEnumerable<IFilter<TEntityContext, TEntity>> filters,
-        IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions, 
+        IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions,
         IEnumerable<IPostProcessingAction<TEntityContext, TEntity>> postProcessingActions)
     {
         Filters = filters;
@@ -24,17 +25,17 @@ public class HandlerMiddleware<THandler, TEntityContext, TEntity> : IHandlerMidd
 
     public async Task ProcessAsync(TEntityContext context, CancellationToken cancellationToken)
     {
-        foreach(var filter in Filters)
+        foreach (var filter in Filters)
             if (!await filter.MatchesAsync(context, cancellationToken).ConfigureAwait(false))
                 return;
-        
-        THandler handler = context.Components.Resolve<THandler>();
+
+        var handler = context.Components.Resolve<THandler>();
 
         foreach (var preProcessingAction in PreProcessingActions)
             await preProcessingAction.InvokeAsync(context, cancellationToken).ConfigureAwait(false);
-        
+
         await handler.HandleAsync(context, cancellationToken).ConfigureAwait(false);
-        
+
         foreach (var postProcessingAction in PreProcessingActions)
             await postProcessingAction.InvokeAsync(context, cancellationToken).ConfigureAwait(false);
     }

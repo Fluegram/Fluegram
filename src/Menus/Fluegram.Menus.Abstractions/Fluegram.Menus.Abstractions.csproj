@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Keyboards\Fluegram.Keyboards.Abstractions\Fluegram.Keyboards.Abstractions.csproj" />
-      <ProjectReference Include="..\..\Widgets\Fluegram.Widgets.Abstractions\Fluegram.Widgets.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Keyboards\Fluegram.Keyboards.Abstractions\Fluegram.Keyboards.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Widgets\Fluegram.Widgets.Abstractions\Fluegram.Widgets.Abstractions.csproj"/>
     </ItemGroup>
 
 </Project>

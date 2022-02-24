@@ -11,7 +11,7 @@ public class BotInformationService
     {
         _telegramBotClient = telegramBotClient;
     }
-    
+
     public User Bot { get; private set; }
 
     public async Task InitializeAsync()

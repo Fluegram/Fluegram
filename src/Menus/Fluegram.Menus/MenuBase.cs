@@ -13,9 +13,9 @@ public class MenuBase : List<IMenu>, IMenu
     }
 
     public string Id { get; }
-    
+
     public IMenu? Parent { get; set; }
-    
+
     public Func<IContext, string> Name { get; }
     public Func<IContext, string> Text { get; }
 }

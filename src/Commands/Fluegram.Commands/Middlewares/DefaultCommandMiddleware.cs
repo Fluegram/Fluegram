@@ -13,21 +13,28 @@ public class
     where TEntityContext : IEntityContext<TEntity>
     where TEntity : class
 {
+    public DefaultCommandMiddleware(IEnumerable<IFilter<TEntityContext, TEntity>> filters,
+        IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions,
+        IEnumerable<IPostProcessingAction<TEntityContext, TEntity>> postProcessingActions) : base(filters,
+        preProcessingActions, postProcessingActions)
+    {
+    }
+
     public override async Task ProcessAsync(TEntityContext context, CancellationToken cancellationToken)
     {
         if (!await InvokeFiltersAsync(context, cancellationToken).ConfigureAwait(false))
             return;
 
-        TCommand command = context.Components.Resolve<TCommand>();
+        var command = context.Components.Resolve<TCommand>();
 
-        ICommandNameRetriever commandNameRetriever = context.Components.Resolve<ICommandNameRetriever>();
+        var commandNameRetriever = context.Components.Resolve<ICommandNameRetriever>();
 
-        string commandName = commandNameRetriever.Retrieve(context, command.Id);
+        var commandName = commandNameRetriever.Retrieve(context, command.Id);
 
-        IEntityTextManipulator<TEntity> entityTextManipulator =
+        var entityTextManipulator =
             context.Components.Resolve<IEntityTextManipulator<TEntity>>();
 
-        string text = entityTextManipulator.Get(context.Entity);
+        var text = entityTextManipulator.Get(context.Entity);
 
         if (IsMatches(text, commandName, out var resultText))
         {
@@ -42,13 +49,6 @@ public class
             context.Cancel();
         }
     }
-
-    public DefaultCommandMiddleware(IEnumerable<IFilter<TEntityContext, TEntity>> filters,
-        IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions,
-        IEnumerable<IPostProcessingAction<TEntityContext, TEntity>> postProcessingActions) : base(filters,
-        preProcessingActions, postProcessingActions)
-    {
-    }
 }
 
 public class
@@ -59,34 +59,40 @@ public class
     where TEntity : class
     where TArguments : class, new()
 {
-    
+    public DefaultCommandMiddleware(IEnumerable<IFilter<TEntityContext, TEntity>> filters,
+        IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions,
+        IEnumerable<IPostProcessingAction<TEntityContext, TEntity>> postProcessingActions) : base(filters,
+        preProcessingActions, postProcessingActions)
+    {
+    }
+
 
     public override async Task ProcessAsync(TEntityContext context, CancellationToken cancellationToken)
     {
         if (!await InvokeFiltersAsync(context, cancellationToken).ConfigureAwait(false))
             return;
 
-        TCommand command = context.Components.Resolve<TCommand>();
+        var command = context.Components.Resolve<TCommand>();
 
-        ICommandNameRetriever commandNameRetriever = context.Components.Resolve<ICommandNameRetriever>();
+        var commandNameRetriever = context.Components.Resolve<ICommandNameRetriever>();
 
-        string commandName = commandNameRetriever.Retrieve(context, command.Id);
+        var commandName = commandNameRetriever.Retrieve(context, command.Id);
 
-        IEntityTextManipulator<TEntity> entityTextManipulator =
+        var entityTextManipulator =
             context.Components.Resolve<IEntityTextManipulator<TEntity>>();
 
-        string text = entityTextManipulator.Get(context.Entity);
+        var text = entityTextManipulator.Get(context.Entity);
 
         if (IsMatches(text, commandName, out var resultText))
         {
             entityTextManipulator.Set(context.Entity, resultText);
 
-            ICommandArgumentsParser commandArgumentsParser = context.Components.Resolve<ICommandArgumentsParser>();
+            var commandArgumentsParser = context.Components.Resolve<ICommandArgumentsParser<TArguments>>();
 
-            string argumentsText = entityTextManipulator.Get(context.Entity);
+            var argumentsText = entityTextManipulator.Get(context.Entity);
 
-            ICommandArgumentsParseResult<TArguments> parseResult =
-                commandArgumentsParser.Parse<TArguments>(argumentsText);
+            var parseResult =
+                commandArgumentsParser.Parse(argumentsText);
 
             if (parseResult is ICommandArgumentsSuccessfulParseResult<TArguments> { Arguments: { } arguments })
             {
@@ -99,9 +105,5 @@ public class
                 await command.ProcessInvalidArgumentsAsync(context, errors, cancellationToken).ConfigureAwait(false);
             }
         }
-    }
-
-    public DefaultCommandMiddleware(IEnumerable<IFilter<TEntityContext, TEntity>> filters, IEnumerable<IPreProcessingAction<TEntityContext, TEntity>> preProcessingActions, IEnumerable<IPostProcessingAction<TEntityContext, TEntity>> postProcessingActions) : base(filters, preProcessingActions, postProcessingActions)
-    {
     }
 }

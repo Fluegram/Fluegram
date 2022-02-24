@@ -3,5 +3,4 @@
 [AttributeUsage(AttributeTargets.Property)]
 public class CommandArgumentAttribute : Attribute
 {
-    
 }

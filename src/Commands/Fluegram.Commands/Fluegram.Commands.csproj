@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Actions\Fluegram.Actions\Fluegram.Actions.csproj" />
-      <ProjectReference Include="..\..\Filters\Fluegram.Filters\Fluegram.Filters.csproj" />
-      <ProjectReference Include="..\..\Fluegram\Fluegram.csproj" />
-      <ProjectReference Include="..\Fluegram.Commands.Abstractions\Fluegram.Commands.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Actions\Fluegram.Actions\Fluegram.Actions.csproj" />
+        <ProjectReference Include="..\..\Filters\Fluegram.Filters\Fluegram.Filters.csproj" />
+        <ProjectReference Include="..\..\Fluegram\Fluegram.csproj" />
+        <ProjectReference Include="..\Fluegram.Commands.Abstractions\Fluegram.Commands.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

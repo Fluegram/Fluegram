@@ -4,12 +4,6 @@ using Telegram.Bot;
 
 namespace Fluegram.SourceGenerator.Parameters;
 
-public enum GeneratorMode
-{
-    Abstractions,
-    Implementations
-}
-
 [Generator]
 public class ParametersGenerator : ISourceGenerator
 {
@@ -23,24 +17,21 @@ public class ParametersGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        Type extensionsClassType = typeof(TelegramBotClientExtensions);
+        var extensionsClassType = typeof(TelegramBotClientExtensions);
 
-        GeneratorMode mode = context.Compilation.AssemblyName!.Contains("Abstractions")
+        var mode = context.Compilation.AssemblyName!.Contains("Abstractions")
             ? GeneratorMode.Abstractions
             : GeneratorMode.Implementations;
 
-        bool abstractions = mode is GeneratorMode.Abstractions;
+        var abstractions = mode is GeneratorMode.Abstractions;
 
-        string memberType = abstractions ? "interface" : "class";
+        var memberType = abstractions ? "interface" : "class";
 
         var methods = extensionsClassType.GetMethods(BindingFlags.Public | BindingFlags.Static);
 
-        List<ParameterInfo> infos = new List<ParameterInfo>();
+        var infos = new List<ParameterInfo>();
 
-        foreach (MethodInfo methodInfo in extensionsClassType.GetMethods())
-        {
-            infos.AddRange(methodInfo.GetParameters());
-        }
+        foreach (var methodInfo in extensionsClassType.GetMethods()) infos.AddRange(methodInfo.GetParameters());
 
         var filtered = infos.DistinctBy(_ => $"{_.Name} {GetFullTypeName(_.ParameterType)}")
             .Where(_ => _.Name != "cancellationToken" && _.Name != "btClient")
@@ -52,13 +43,13 @@ public class ParametersGenerator : ISourceGenerator
 
         foreach (var parameter in filtered)
         {
-            string parameterName = parameter.Name!.ToPascal();
+            var parameterName = parameter.Name!.ToPascal();
 
-            bool alreadyAdded = generated.Contains(parameterName);
+            var alreadyAdded = generated.Contains(parameterName);
 
-            string parameterType = GetFullTypeName(parameter.ParameterType);
+            var parameterType = GetFullTypeName(parameter.ParameterType);
 
-            string source = $@"
+            var source = $@"
 
 public interface IHas{(alreadyAdded ? "Different" : "")}{parameterName}
 {{
@@ -71,52 +62,55 @@ public interface IHas{(alreadyAdded ? "Different" : "")}{parameterName}<T> : IHa
 }}
 
 ";
-            
-            
 
-            string sourceWithNamespace = $"namespace Fluegram.Parameters{(abstractions ? ".Abstractions.Has" : ".Has")};\n{source}";
-            
-            
-            if(abstractions)
+
+            var sourceWithNamespace =
+                $"namespace Fluegram.Parameters{(abstractions ? ".Abstractions.Has" : ".Has")};\n{source}";
+
+
+            if (abstractions)
                 context.AddSource($"IHas{(alreadyAdded ? "Different" : "")}{parameterName}.cs", sourceWithNamespace);
 
-            hasNames[(parameter.Name!, parameter.ParameterType)] = $"IHas{(alreadyAdded ? "Different" : "")}{parameterName}";
+            hasNames[(parameter.Name!, parameter.ParameterType)] =
+                $"IHas{(alreadyAdded ? "Different" : "")}{parameterName}";
 
             generated.Add(parameterName);
         }
 
         List<string> addedMethods = new();
 
-        foreach (MethodInfo methodInfo in methods)
+        foreach (var methodInfo in methods)
         {
-            string name = methodInfo.Name.Replace("Async", "");
+            var name = methodInfo.Name.Replace("Async", "");
 
-            
-            bool exists = addedMethods.Contains(methodInfo.Name);
+
+            var exists = addedMethods.Contains(methodInfo.Name);
 
             if (exists)
             {
-                
             }
-            
-            string existsString = exists ? "Extended" : "";
-            
-            string memberName = abstractions ? $"I{name}{existsString}Parameters" : $"{name}{existsString}Parameters";
 
-            bool genericReturnType = methodInfo.ReturnType is { IsGenericType: true } returnType &&
-                                     returnType.GetGenericTypeDefinition() == typeof(Task<>);
+            var existsString = exists ? "Extended" : "";
+
+            var memberName = abstractions ? $"I{name}{existsString}Parameters" : $"{name}{existsString}Parameters";
+
+            var genericReturnType = methodInfo.ReturnType is { IsGenericType: true } returnType &&
+                                    returnType.GetGenericTypeDefinition() == typeof(Task<>);
 
 
             var parameters = methodInfo.GetParameters().Skip(1).SkipLast(1).ToList();
 
-            string hasNameDefinitions = string.Join(", ", parameters.Select(_ => "Fluegram.Parameters.Abstractions.Has." + hasNames[(_.Name!, _.ParameterType)] + $"<{memberName}>"));
+            var hasNameDefinitions = string.Join(", ",
+                parameters.Select(_ =>
+                    "Fluegram.Parameters.Abstractions.Has." + hasNames[(_.Name!, _.ParameterType)] +
+                    $"<{memberName}>"));
 
 
             List<string> classDefinitions = new();
 
 
-            string genericDefinition =
-                (genericReturnType ? $"<{GetFullTypeName(methodInfo.ReturnType.GetGenericArguments().First())}>" : "");
+            var genericDefinition =
+                genericReturnType ? $"<{GetFullTypeName(methodInfo.ReturnType.GetGenericArguments().First())}>" : "";
 
 
             if (!abstractions)
@@ -125,12 +119,12 @@ public interface IHas{(alreadyAdded ? "Different" : "")}{parameterName}<T> : IHa
 
                 foreach (var parameter in parameters)
                 {
-                    string parameterName = parameter.Name!.ToPascal();
+                    var parameterName = parameter.Name!.ToPascal();
 
-                    string parameterType = GetFullTypeName(parameter.ParameterType);
+                    var parameterType = GetFullTypeName(parameter.ParameterType);
 
-                    
-                    string parameterMember = $@"
+
+                    var parameterMember = $@"
 
 public {parameterType} {parameterName} {{ get; set; }}
 
@@ -143,14 +137,14 @@ public Fluegram.Parameters.Abstractions.I{memberName} Use{parameterName}({parame
 
 
 ";
-                    
+
                     classDefinitions.Add(parameterMember);
-                    
+
                     parameterBindings.Add($"{parameter.Name}: {parameter.Name!.ToPascal()}");
                 }
-  
-                
-                string invokeMethod = $@"
+
+
+                var invokeMethod = $@"
 
 public async System.Threading.Tasks.Task{genericDefinition} InvokeAsync(Telegram.Bot.ITelegramBotClient telegramBotClient, CancellationToken cancellationToken = default)
 {{
@@ -163,16 +157,17 @@ public async System.Threading.Tasks.Task{genericDefinition} InvokeAsync(Telegram
             }
 
 
-            string parametersClassSource = $@"
+            var parametersClassSource = $@"
 public {memberType} {memberName} : {(abstractions ? $"Fluegram.Parameters.Abstractions.IParameters{genericDefinition}{(hasNameDefinitions.Any() ? "," : "")} {hasNameDefinitions}" : $"Fluegram.Parameters.Abstractions.I{memberName}")}  
 {{
     {string.Join("\n", classDefinitions)}
 }}";
-            
+
             addedMethods.Add(methodInfo.Name);
 
-            string sourceWithNamespace = $"namespace Fluegram.Parameters{(abstractions ? ".Abstractions" : "")};\n{parametersClassSource}";
-            
+            var sourceWithNamespace =
+                $"namespace Fluegram.Parameters{(abstractions ? ".Abstractions" : "")};\n{parametersClassSource}";
+
             context.AddSource($"{memberName}.cs", sourceWithNamespace);
         }
     }
@@ -180,14 +175,11 @@ public {memberType} {memberName} : {(abstractions ? $"Fluegram.Parameters.Abstra
 
     private string GetFullTypeName(Type type)
     {
-        if (type.GetGenericArguments().Length == 0)
-        {
-            return type.Namespace + "." + type.Name;
-        }
+        if (type.GetGenericArguments().Length == 0) return type.Namespace + "." + type.Name;
 
         var genericArguments = type.GetGenericArguments();
         var typeDefeninition = type.Namespace + "." + type.Name;
         var unmangledName = typeDefeninition.Substring(0, typeDefeninition.IndexOf("`", StringComparison.Ordinal));
-        return unmangledName + "<" + String.Join(",", genericArguments.Select(GetFullTypeName)) + ">";
+        return unmangledName + "<" + string.Join(",", genericArguments.Select(GetFullTypeName)) + ">";
     }
 }
